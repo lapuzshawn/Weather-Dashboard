@@ -19,7 +19,7 @@
             <aside class="col-4 p-3" style="width: 33%;">
                 <div id="searchCityContainer" class="pb-2">
                     <h1 class="text-primary text-center">Search for any City</h1>
-                    <form id="searchForm" class="mb-2">
+                    <form id="searchForm" class="form mb-2">
                         <input id="cityInput" class="form-control" placeholder="Irvine">
                         <button id="citySearchButton" class="btn btn-primary mt-2 w-100">Search</button>
                     </form>
@@ -35,30 +35,30 @@
 <!-- Right Side COL for city temp, wind and 5 day forcast -->
             <div class="col-8 p-3">
 
-                <div id="todayContainer" class="card bg-primary p-3 m-2 border text-light">
+                <div id="todayContainer" class="card bg-primary p-3 m-2 border text-light ">
                     <!-- HARDCODED PLACEHOLDERS -->
-                    <h1 class="text-center bg-primary text-light" >Irvine, California </h1>
-                    <h5 class="text-center bg-primary text-light" >(05/16/2023)</h5>
+                    <h1 id= "todayHeading" class="text-center bg-primary text-light" ></h1>
+                    <h5 class="text-center bg-primary text-light" ></h5>
                     <div id="cityContainer" class="d-flex flex-wrap "> 
-                        <div class="container text-center">
-                            <div class="row align-items-center">
-                              <div class="col">
-                                <p> Temp: 70 </p>
+                            <div class="row align-items-center container text-center">
+                              <div id= "tempCtr" class="col">
+                                    
                               </div>
-                              <div class="col">
-                                <p> Wind: 70 </p>
+                              <div id= "windCtr" class="col">
+
                               </div>
-                              <div class="col">
-                                <p> Humid: 70 </p>
+                              <div id= "humidCtr" class="col">
+                            
                               </div>
-                            </div>
+                            
                         </div>    
                     </div>
                 </div>
                 <div>
                     <h2 id="forecastTitle" class="text-primary text-center">5-Day Forecast:</h2>
-                    <div id="forecastContainer" class="d-flex flex-wrap">
+                    <section id="forecastCtr" class="d-flex flex-wrap">
                         <!-- HARDCODED PLACEHOLDERS -->
+                        <!-- 
                         <div class="card bg-primary p-2 m-2 text-light flex-grow-1" style="max-width: 50%;">
                             <div class="card-body"><h6>2023-05-17</h6></div>
                             <img src="https://openweathermap.org/img/wn/02n@2x.png" class="card-img-top" style="width: 50px;">
@@ -68,7 +68,7 @@
                             <p class="card-text">Humidity: 87%</p>
                         </div>
                         <div class="card bg-primary p-2 m-2 text-light flex-grow-1" style="max-width: 50%;">
-                            <!-- HARDCODED PLACEHOLDERS -->
+                   
                         <div class="card-body"><h6>2023-05-17</h6></div>
                             <img src="https://openweathermap.org/img/wn/02n@2x.png" class="card-img-top" style="width: 50px;">
                             <p class="card-text">Temp: 60.03°F</p>
@@ -76,7 +76,7 @@
                             <p class="card-text">Wind: 4.05mph</p>
                             <p class="card-text">Humidity: 87%</p>
                         </div>                        <div class="card bg-primary p-2 m-2 text-light flex-grow-1" style="max-width: 50%;">
-                            <!-- HARDCODED PLACEHOLDERS -->
+                           
                             <div class="card-body"><h6>2023-05-17</h6></div>
                             <img src="https://openweathermap.org/img/wn/01n@2x.png" class="card-img-top" style="width: 50px;">
                             <p class="card-text">Temp: 60.03°F</p>
@@ -84,7 +84,7 @@
                             <p class="card-text">Wind: 4.05mph</p>
                             <p class="card-text">Humidity: 87%</p>
                         </div>                        <div class="card bg-primary p-2 m-2 text-light flex-grow-1" style="max-width: 50%;">
-                            <!-- HARDCODED PLACEHOLDERS -->
+                            
                         <div class="card-body"><h6>2023-05-17</h6></div>
                             <img src="https://openweathermap.org/img/wn/01n@2x.png" class="card-img-top" style="width: 50px;">
                             <p class="card-text">Temp: 60.03°F</p>
@@ -92,14 +92,16 @@
                             <p class="card-text">Wind: 4.05mph</p>
                             <p class="card-text">Humidity: 87%</p>
                         </div>                        <div class="card bg-primary p-2 m-2 text-light flex-grow-1" style="max-width: 50%;">
-                            <!-- HARDCODED PLACEHOLDERS -->
+                            
                         <div class="card-body"><h6>2023-05-17</h6></div>
                             <img src="https://openweathermap.org/img/wn/01n@2x.png" class="card-img-top" style="width: 50px;">
                             <p class="card-text">Temp: 60.03°F</p>
                             <p class="card-text">Feels like: 59.81°F</p>
                             <p class="card-text">Wind: 4.05mph</p>
                             <p class="card-text">Humidity: 87%</p>
-                        </div>
+
+                            <!-- HARDCODED PLACEHOLDERS -->
+                        </section>
                     </div>
                 </div>
             </div>
@@ -107,7 +109,7 @@
     </div>
 
 <!-- Will add scripts later  --> 
-    <script src="./js/weatherScript.js"></script>
+    <script src="./assets/js/weatherScript.js"></script>
 
     <script 
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" 

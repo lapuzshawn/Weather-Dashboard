@@ -10,9 +10,13 @@ var searchForm = document.querySelector('#searchForm');
 var cityInput = document.querySelector('#cityInput');
 var recentSearches = document.querySelector('#recentSearches');
 var todayContainer = document.querySelector('#todayContainer');
-var forecastContainer = document.querySelector('#forecastContainer');
+var cityContainer = document.querySelector('#cityContainer');
+// var tempContainer = document.querySelector('#tempCtr');
+// var windContainer = document.querySelector('#windCtr');
+// var humidContainer = document.querySelector('#humidCtr');
+var forecastContainer = document.querySelector('#forecastCtr');
 // var searchButton = document.querySelector('#todayContainer');
-
+var todayHd = document.querySelector('#todayHeading');
 
 // Function to display the search history list.
 function renderSearchHistory() {
@@ -33,29 +37,96 @@ function renderSearchHistory() {
 
   // Function to display the current weather data fetched from OpenWeather api.
   function renderCurrentWeather(city, weather) {
-
+    var date = dayjs().format('M/D/YYYY');
+    var temp = weather.main.temp;
+    var wind = weather.wind.speed;
+    var humidity = weather.main.humidity;
+    var iconUrl = `https://openweathermap.org/img/w/${weather.weather[0].icon}.png`;
+    var iconDescription = weather.weather[0].description || weather[0].main;
+  
+    var card = document.createElement('div');
+    var cardBody = document.createElement('div');
+    var heading = document.createElement('h2');
+    var weatherIcon = document.createElement('img');
+    var tempEl = document.createElement('p');
+    var windEl = document.createElement('p');
+    var humidityEl = document.createElement('p');
+  
+    card.className = 'card';
+    cardBody.className = 'card-body';
+    card.append(cardBody);
+  
+    heading.className = 'h3 card-title';
+    tempEl.className = 'card-text';
+    windEl.className = 'card-text';
+    humidityEl.className = 'card-text';
+  
+    heading.textContent = `${city} (${date})`;
+    weatherIcon.src = iconUrl;
+    weatherIcon.alt = iconDescription;
+    weatherIcon.className = 'weather-img';
+    heading.append(weatherIcon);
+    tempEl.textContent = `Temp: ${temp}°F`;
+    windEl.textContent = `Wind: ${wind} MPH`;
+    humidityEl.textContent = `Humidity: ${humidity} %`;
+    cardBody.append(heading, tempEl, windEl, humidityEl);
+  
+    todayContainer.innerHTML = '';
+    todayContainer.append(card);
   }
   
   // Function to display a forecast card given an object from open weather api
   // daily forecast.
   function renderForecastCard(forecast) {
-    // variables for data from api
+    var iconUrl = `https://openweathermap.org/img/w/${forecast.weather[0].icon}.png`;
+    var iconDescription = forecast.weather[0].description;
+    var temp = forecast.main.temp;
+    var humidity = forecast.main.humidity;
+    var wind = forecast.wind.speed;
   
-    // Create elements for a card
-
-    // Add content to elements
-
+    var col = document.createElement('div');
+    var card = document.createElement('div');
+    var cardBody = document.createElement('div');
+    var cardTitle = document.createElement('h5');
+    var weatherIcon = document.createElement('img');
+    var tempEl = document.createElement('p');
+    var windEl = document.createElement('p');
+    var humidityEl = document.createElement('p');
+  
+    col.appendChild(card);
+    card.appendChild(cardBody);
+    cardBody.append(cardTitle, weatherIcon, tempEl, windEl, humidityEl);
+  
+    col.className = 'col-md';
+    col.classList.add('five-day-card');
+    card.className = 'card bg-primary h-100 text-white';
+    cardBody.className = 'card-body p-2';
+    cardTitle.className = 'card-title';
+    tempEl.className = 'card-text';
+    windEl.className = 'card-text';
+    humidityEl.className = 'card-text';
+  
+    cardTitle.textContent = dayjs(forecast.dt_txt).format('M/D/YYYY');
+    weatherIcon.src = iconUrl;
+    weatherIcon.alt = iconDescription;
+    tempEl.textContent = `Temp: ${temp} °F`;
+    windEl.textContent = `Wind: ${wind} MPH`;
+    humidityEl.textContent = `Humidity: ${humidity} %`;
+  
+    forecastContainer.append(col);
   }
   
+
   // Function to display 5 day forecast.
   function renderForecast(dailyForecast) {
     // Create timestamps for start and end of 5 day forecast
 
 
   }
-// Function to render weather today and forecast.
+// xx Function to render weather today and forecast.
   function renderItems(city, data) {
-
+    renderCurrentWeather(city, data.list[0], data.city.timezone);
+    renderForecast()
   }
   
 /**********   FETCH FUNCTIONS */
@@ -93,18 +164,21 @@ function renderSearchHistory() {
         if (!data[0]) {
           alert('Location not found');
         } else {
-          appendToHistory(search);
+          // appendToHistory(search);
           fetchWeather(data[0]);
+
+          console.log(data);
         }
       })
+      /*
       .catch(function (err) {
         console.error(err);
-      });
+      });*/
   }
   
 /********** HANDLER FUNCTIONS */
   function handleSearchFormSubmit(e) {
-    // Don't continue if there is nothing in the search form
+    // XX Don't continue if there is nothing in the search form
     if (!cityInput.value) {
       return;
     }
@@ -115,20 +189,20 @@ function renderSearchHistory() {
     cityInput.value = '';
   }
   
-  function handleSearchHistoryClick(e) {
-    // Don't do search if current elements is not a search history button
-    if (!e.target.matches('.btn-history')) {
-      return;
-    }
+  // function handleSearchHistoryClick(e) {
+  //   // Don't do search if current elements is not a search history button
+  //   if (!e.target.matches('.btn-history')) {
+  //     return;
+  //   }
   
-    var btn = e.target;
-    var search = btn.getAttribute('data-search');
-    fetchCoords(search);
-  }
+  //   var btn = e.target;
+  //   var search = btn.getAttribute('data-search');
+  //   fetchCoords(search);
+  // }
   
 // Initialize the application
 initSearchHistory();
 searchForm.addEventListener('submit', handleSearchFormSubmit);
-recentSearches.addEventListener('click', handleSearchHistoryClick);
+// recentSearches.addEventListener('click', handleSearchHistoryClick);
 
   
