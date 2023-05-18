@@ -3,40 +3,63 @@ var lat;
 var lon;
 var weatherApiKey = 'b38319b9575fb449167d2125fd88dd05';
 var apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${weatherApiKey}`;
-var weatherApiUrl = `https://api.openweathermap.org/`;
+var openWeatherApiUrl = `https://api.openweathermap.org/`;
 var searchHistory = [];
+
 // DOM element references
 var searchForm = document.querySelector('#searchForm');
 var cityInput = document.querySelector('#cityInput');
-var recentSearches = document.querySelector('#recentSearches');
-var todayContainer = document.querySelector('#todayContainer');
-var cityContainer = document.querySelector('#cityContainer');
-// var tempContainer = document.querySelector('#tempCtr');
-// var windContainer = document.querySelector('#windCtr');
-// var humidContainer = document.querySelector('#humidCtr');
-var forecastContainer = document.querySelector('#forecastCtr');
-// var searchButton = document.querySelector('#todayContainer');
-var todayHd = document.querySelector('#todayHeading');
+var recentSearchCtnr = document.querySelector('#recentSearchesCtr');
+var todayCtnr = document.querySelector('#todayContainer');
+var cityCtnr = document.querySelector('#cityContainer');
+var forecastCtnr = document.querySelector('#forecastCtr');
+// var tempCtnr = document.querySelector('#tempCtr');
+// var windCtnr = document.querySelector('#windCtr');
+// var humidCtnr = document.querySelector('#humidCtr');
+var todayHdg = document.querySelector('#todayHeading');
 
-// Function to display the search history list.
-function renderSearchHistory() {
+// Display the search history list
+function displayHistory() {
+  recentSearchCtnr.innerHTML = '';
 
+  for (var i = searchHistory.length - 1; i >= 0; i--) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.setAttribute('aria-controls', 'today forecast');
+    btn.classList.add('recent-btn', 'btn-history', 'btn', 'btn-primary', 'mt-2', 'w-100');
+
+    btn.setAttribute('data-search', searchHistory[i]);
+    btn.textContent = searchHistory[i];
+    recentSearchCtnr.append(btn);
+  }
+}
+  
+  // Appends history to local storage
+  function appendHistory(search) {
+
+    if (searchHistory.indexOf(search) !== -1) {
+      return;
+    }
+    searchHistory.push(search);
+  
+    localStorage.setItem('search-history', JSON.stringify(searchHistory));
+    displayHistory();
   }
   
-  // Function to update history in local storage then updates displayed history.
-  function appendToHistory(search) {
-
+  // Initialize history from local storage
+  function initHistory() {
+    var storedHistory = localStorage.getItem('search-history');
+    if (storedHistory) {
+      searchHistory = JSON.parse(storedHistory);
+    }
+    displayHistory();
   }
   
-  // Function to get search history from local storage
-  function initSearchHistory() {
-
-  }
   
 /********** RENDER FUNCTIONS */
 
-  // Function to display the current weather data fetched from OpenWeather api.
-  function renderCurrentWeather(city, weather) {
+  // Display the current weather data from Open Weather api.
+  function displayCurrentWeather(city, weather) {
     var date = dayjs().format('M/D/YYYY');
     var temp = weather.main.temp;
     var wind = weather.wind.speed;
@@ -66,18 +89,17 @@ function renderSearchHistory() {
     weatherIcon.alt = iconDescription;
     weatherIcon.className = 'weather-img';
     heading.append(weatherIcon);
-    tempEl.textContent = `Temp: ${temp}°F`;
-    windEl.textContent = `Wind: ${wind} MPH`;
+    tempEl.textContent = `Temp: ${temp} F`;
+    windEl.textContent = `Windspeed: ${wind} mph`;
     humidityEl.textContent = `Humidity: ${humidity} %`;
     cardBody.append(heading, tempEl, windEl, humidityEl);
   
-    todayContainer.innerHTML = '';
-    todayContainer.append(card);
+    todayCtnr.innerHTML = '';
+    todayCtnr.append(card);
   }
   
-  // Function to display a forecast card given an object from open weather api
-  // daily forecast.
-  function renderForecastCard(forecast) {
+  // Display forecast card from Open Weather api
+  function displayForecastCard(forecast) {
     var iconUrl = `https://openweathermap.org/img/w/${forecast.weather[0].icon}.png`;
     var iconDescription = forecast.weather[0].description;
     var temp = forecast.main.temp;
@@ -109,24 +131,42 @@ function renderSearchHistory() {
     cardTitle.textContent = dayjs(forecast.dt_txt).format('M/D/YYYY');
     weatherIcon.src = iconUrl;
     weatherIcon.alt = iconDescription;
-    tempEl.textContent = `Temp: ${temp} °F`;
-    windEl.textContent = `Wind: ${wind} MPH`;
+    tempEl.textContent = `Temp: ${temp} F`;
+    windEl.textContent = `Windspeed: ${wind} mph`;
     humidityEl.textContent = `Humidity: ${humidity} %`;
   
-    forecastContainer.append(col);
+    forecastCtnr.append(col);
   }
   
 
-  // Function to display 5 day forecast.
-  function renderForecast(dailyForecast) {
-    // Create timestamps for start and end of 5 day forecast
-
-
+  function displayForecast(dailyForecast) {
+    var startDt = dayjs().add(1, 'day').startOf('day').unix();
+    var endDt = dayjs().add(6, 'day').startOf('day');
+  
+    var headingCol = document.createElement('div');
+    var heading = document.createElement('h2');
+  
+    headingCol.className = 'col-12';
+    heading.textContent = '5-Day Forecast:';
+    heading.classList.add('text-center', 'text-primary');
+    headingCol.appendChild(heading);
+  
+    forecastCtnr.innerHTML = '';
+    forecastCtnr.appendChild(headingCol);
+  
+    for (var i = 0; i < dailyForecast.length; i++) {
+      if (dailyForecast[i].dt >= startDt && dailyForecast[i].dt < endDt) {
+        if (dailyForecast[i].dt_txt.slice(11, 13) == "12") {
+          displayForecastCard(dailyForecast[i]);
+        }
+      }
+    }
   }
-// xx Function to render weather today and forecast.
-  function renderItems(city, data) {
-    renderCurrentWeather(city, data.list[0], data.city.timezone);
-    renderForecast()
+
+// Calls on functions for currentWeather and forecast.
+  function initItems(city, data) {
+    displayCurrentWeather(city, data.list[0]);
+    displayForecast(data.list)
   }
   
 /**********   FETCH FUNCTIONS */
@@ -138,23 +178,20 @@ function renderSearchHistory() {
     var { lon } = location;
     var city = location.name;
   
-    var apiUrl = `${weatherApiUrl}/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${weatherApiKey}`;
+    var apiUrl = `${openWeatherApiUrl}/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${weatherApiKey}`;
   
     fetch(apiUrl)
       .then(function (res) {
         return res.json();
       })
       .then(function (data) {
-        renderItems(city, data);
+        initItems(city, data);
       })
-      .catch(function (err) {
-        console.error(err);
-      });
   }
   
-//   Fetches coordinates for given location
+//   Fetches coordinates for city searcg
   function fetchCoords(search) {
-    var apiUrl = `${weatherApiUrl}/geo/1.0/direct?q=${search}&limit=5&appid=${weatherApiKey}`;
+    var apiUrl = `${openWeatherApiUrl}/geo/1.0/direct?q=${search}&limit=5&appid=${weatherApiKey}`;
   
     fetch(apiUrl)
       .then(function (res) {
@@ -164,20 +201,16 @@ function renderSearchHistory() {
         if (!data[0]) {
           alert('Location not found');
         } else {
-          // appendToHistory(search);
+   
           fetchWeather(data[0]);
-
+          appendHistory(search);
           console.log(data);
         }
       })
-      /*
-      .catch(function (err) {
-        console.error(err);
-      });*/
   }
   
 /********** HANDLER FUNCTIONS */
-  function handleSearchFormSubmit(e) {
+  function handleSearchSubmit(e) {
     // XX Don't continue if there is nothing in the search form
     if (!cityInput.value) {
       return;
@@ -189,20 +222,20 @@ function renderSearchHistory() {
     cityInput.value = '';
   }
   
-  // function handleSearchHistoryClick(e) {
-  //   // Don't do search if current elements is not a search history button
-  //   if (!e.target.matches('.btn-history')) {
-  //     return;
-  //   }
+  function handleRecentSearchClick(e) {
+    // Don't do search if current elements is not a search history button
+    if (!e.target.matches('.btn-history')) {
+      return;
+    }
   
-  //   var btn = e.target;
-  //   var search = btn.getAttribute('data-search');
-  //   fetchCoords(search);
-  // }
+    var btn = e.target;
+    var search = btn.getAttribute('data-search');
+    fetchCoords(search);
+  }
   
 // Initialize the application
-initSearchHistory();
-searchForm.addEventListener('submit', handleSearchFormSubmit);
-// recentSearches.addEventListener('click', handleSearchHistoryClick);
+initHistory();
+searchForm.addEventListener('submit', handleSearchSubmit);
+recentSearchCtnr.addEventListener('click', handleRecentSearchClick);
 
   

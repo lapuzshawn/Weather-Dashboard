@@ -1,0 +1,35 @@
+#searchCityContainer {
+    /* border-bottom: 2px;
+    border-color: blue; */
+    margin-bottom: 7px;
+    border-bottom: 1px solid rgba(0, 60, 255, 0.797);
+  
+
+}
+
+.recent-btn {
+    /* color: rgb(241, 241, 241); */
+    background-color: rgba(75, 75, 75, 0.592);
+    padding: 5px;
+    margin: 5px;
+    display: inline-block;
+}
+
+
+.card {
+
+    background-color: rgba(155, 235, 235, 0.433);
+}
+.five-day-card{
+
+    margin-right: 10px;
+
+}
+.col-12 {
+
+    background-color: rgba(35, 132, 132, 0);
+    border-radius: 5px;
+    
+
+}
+

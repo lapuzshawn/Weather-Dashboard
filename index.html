@@ -18,18 +18,19 @@
         <div class="row">
             <aside class="col-4 p-3" style="width: 33%;">
                 <div id="searchCityContainer" class="pb-2">
-                    <h1 class="text-primary text-center">Search for any City</h1>
+                    <h3 class="text-primary text-center">Search for any City</h3>
                     <form id="searchForm" class="form mb-2">
-                        <input id="cityInput" class="form-control" placeholder="Irvine">
+                        <input id="cityInput" class="form-control" placeholder="City Search">
                         <button id="citySearchButton" class="btn btn-primary mt-2 w-100">Search</button>
                     </form>
                 </div>
 <!-- Recent searchs -->    
-                <div class="p-3">
-                    <ul id="recentSearches" class="list-group w-100">
-                    <!-- HARDCODED PLACEHOLDERS -->
+                <div id="recentSearchesCtr" class="p-3">
+                    <!-- HARDCODED PLACEHOLDERS 
+                    <ul  class="list-group w-100">
                     <li class="list-group-item text-center custom-list "> Irvine </li>
                     </ul>
+                -->
                 </div>
             </aside>
 <!-- Right Side COL for city temp, wind and 5 day forcast -->
@@ -55,7 +56,7 @@
                     </div>
                 </div>
                 <div>
-                    <h2 id="forecastTitle" class="text-primary text-center">5-Day Forecast:</h2>
+                    <h2 id="forecastTitle" class="text-primary text-center"></h2>
                     <section id="forecastCtr" class="d-flex flex-wrap">
                         <!-- HARDCODED PLACEHOLDERS -->
                         <!-- 
@@ -108,7 +109,7 @@
         </div>
     </div>
 
-<!-- Will add scripts later  --> 
+<!-- Will add more scripts later  --> 
     <script src="./assets/js/weatherScript.js"></script>
 
     <script 
